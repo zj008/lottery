@@ -5,12 +5,13 @@ import "github.com/astaxie/beego/orm"
 type News struct {
 	Id         int    `json:"-"`
 	NewsType   int    `json:"-"`
-	CreateTime string `json:"-"`
+	CreateTime string `json:"create_time"`
 	Source     string `json:"source"`
 	Title      string `json:"title"`
 	Url string 	`json:"-"`
 	Docid string `json:"-"`
 	Content string `json:"content"`
+	Img string `json:"img"`
 }
 
 func (n *News) TableName() string {

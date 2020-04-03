@@ -15,6 +15,9 @@ type Expert struct {
 	HitRate float64 `orm:"column(hit_rate)" json:"hit_rate"`
 	Foot int `orm:"column(foot)" json:"foot"`
 	Basket int `orm:"column(basket)" json:"basket"`
+	Description string `orm:"description" json:"description"`
+	Follower int `orm:"follower" json:"follower"`
+	LeagueMatch []LeagueMatch `orm:"-" json:"league_match,omitempty"`
 }
 
 type HotExpert struct {
@@ -53,18 +56,22 @@ func init() {
 	orm.RegisterModel(new(HotExpert))
 }
 
-func GetAllExpert(t string, limit int64, offset int64) (e []Expert, err error) {
+func GetAllExpert(t string, limit int64, offset int64) (n int64, e []Expert, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(Expert))
-	n, err := qs.Filter(t, 1).Limit(limit, offset).All(&e)
+	n, err = qs.Filter(t, 1).Count()
 	if err != nil{
-		return e, err
+		return
+	}
+	_, err = qs.Filter(t, 1).Limit(limit, offset).All(&e)
+	if err != nil{
+		return
 	}
 	if n == 0{
 		err = errors.New("no row found")
-		return e, err
+		return
 	}
-	return e, nil
+	return
 }
 
 func GetHotExpert(t int64) (e []HotExp, err error) {
@@ -80,3 +87,19 @@ func GetHotExpert(t int64) (e []HotExp, err error) {
 	}
 	return e, nil
 }
+
+func GetExpertDetail(id int) (e Expert, err error) {
+	o := orm.NewOrm()
+	e = Expert{Id:id}
+	err = o.Read(&e)
+	if err != nil{
+		return
+	}
+	l, err := GetExpertLeagueMatch(id)
+	if err != nil{
+		return
+	}
+	e.LeagueMatch = l
+	return
+}
+

@@ -32,11 +32,18 @@ func (e *ExpertController) GetAll() {
 	if v, err := e.GetInt64("offset");err==nil{
 		offset = v
 	}
-	experts, err := models.GetAllExpert(t, limit, offset)
+	n, experts, err := models.GetAllExpert(t, limit, offset)
 	if err != nil{
 		lib.ResponseError(&e.Controller, lib.ErrorGetAllExpert, err)
 	}
-	lib.ResponseSuccess(&e.Controller, experts)
+	res := struct {
+		Total int64
+		Data interface{}
+	}{
+		Total:n,
+		Data:experts,
+	}
+	lib.ResponseSuccess(&e.Controller, res)
 }
 
 // GetHotExpert ...
@@ -56,4 +63,24 @@ func (e *ExpertController) GetHot() {
 		lib.ResponseError(&e.Controller, lib.ErrorGetHotExpert, err)
 	}
 	lib.ResponseSuccess(&e.Controller, experts)
+}
+
+// GetHotExpert ...
+// @Title Get Hot Exp
+// @Description get Channel
+// @Param	id	query	int 	false	"expert id"
+// @Success 200 {object} models.Channel
+// @Failure 403
+// @router /detail [get]
+func (e *ExpertController) GetDetail() {
+	id, err := e.GetInt("id")
+	if err != nil{
+		lib.ResponseError(&e.Controller, lib.ErrorParam, err)
+		return
+	}
+	expert, err := models.GetExpertDetail(id)
+	if err != nil{
+		lib.ResponseError(&e.Controller, lib.ErrorGetExpertDetail, err)
+	}
+	lib.ResponseSuccess(&e.Controller, expert)
 }

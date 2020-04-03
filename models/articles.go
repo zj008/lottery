@@ -1,6 +1,8 @@
 package models
 
-import "github.com/astaxie/beego/orm"
+import (
+	"github.com/astaxie/beego/orm"
+)
 
 type Articles struct {
 	Id int `orm:"column(id)" json:"id"`
@@ -11,20 +13,13 @@ type Articles struct {
 	Price float64 `orm:"column(price)" json:"price"`
 	PublishTime string `orm:"column(publish_time)" json:"publish_time"`
 	Title string `orm:"column(title)" json:"title"`
-	InfoId int `orm:"column(info_id)" json:"info_id"`
-	GuestName string `orm:"guest_name" json:"guest_name"`
-	HomeName string `orm:"home_name" json:"home_name"`
-	GuestScore int `orm:"guest_score" json:"guest_score"`
-	HomeScore int `orm:"home_score" json:"home_score"`
-	LeagueId int `orm:"league_id" json:"league_id"`
-	LeagueName string `orm:"league_name" json:"league_name"`
-	MatchStatus int `orm:"match_status" json:"match_status"`
-	MatchTime string `orm:"match_time" json:"match_time"`
+	MatchList []Matches `orm:"-" json:"match_list"`
 }
 
 type ArticleDetail struct {
 	Id int `orm:"column(id)" json:"id"`
 	Content string `orm:"column(content)" json:"content"`
+	MatchList []Matches `orm:"-" json:"-"`
 }
 
 func (a *ArticleDetail) TableName() string {
@@ -50,6 +45,14 @@ func GetArticlesByUser(u int, limit int64, offset int64) (n int64, a []Articles,
 	_, err = qs.Filter("expert_id", u).OrderBy("-publish_time").Limit(limit, offset).All(&a)
 	if err != nil{
 		return 0, a, err
+	}
+
+	for i:=0;i<len(a);i++{
+		m, err := GetMatchesByArticleId(a[i].Id)
+		if err != nil{
+			continue
+		}
+		a[i].MatchList = m
 	}
 	return n, a, nil
 }
