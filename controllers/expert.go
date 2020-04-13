@@ -10,6 +10,9 @@ type ExpertController struct {
 	beego.Controller
 }
 
+var host = beego.AppConfig.String("host")
+
+
 // GetAll ...
 // @Title Get All
 // @Description get Channel
@@ -36,9 +39,12 @@ func (e *ExpertController) GetAll() {
 	if err != nil{
 		lib.ResponseError(&e.Controller, lib.ErrorGetAllExpert, err)
 	}
+	for i:=0;i<len(experts);i++{
+		experts[i].Avatar = host + "/img/avatar/" + experts[i].Avatar
+	}
 	res := struct {
-		Total int64
-		Data interface{}
+		Total int64 `json:"total"`
+		Data interface{} `json:"data"`
 	}{
 		Total:n,
 		Data:experts,
@@ -62,6 +68,9 @@ func (e *ExpertController) GetHot() {
 	if err != nil{
 		lib.ResponseError(&e.Controller, lib.ErrorGetHotExpert, err)
 	}
+	for i:=0;i<len(experts);i++{
+		experts[i].Avatar = host + "/img/avatar/" + experts[i].Avatar
+	}
 	lib.ResponseSuccess(&e.Controller, experts)
 }
 
@@ -82,5 +91,7 @@ func (e *ExpertController) GetDetail() {
 	if err != nil{
 		lib.ResponseError(&e.Controller, lib.ErrorGetExpertDetail, err)
 	}
+	expert.Avatar = host + "/img/avatar/" + expert.Avatar
 	lib.ResponseSuccess(&e.Controller, expert)
 }
+

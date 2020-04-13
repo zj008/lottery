@@ -14,12 +14,12 @@ type Articles struct {
 	PublishTime string `orm:"column(publish_time)" json:"publish_time"`
 	Title string `orm:"column(title)" json:"title"`
 	MatchList []Matches `orm:"-" json:"match_list"`
+	Content ArticleDetail `orm:"-" json:"content, omitempty"`
 }
 
 type ArticleDetail struct {
 	Id int `orm:"column(id)" json:"id"`
 	Content string `orm:"column(content)" json:"content"`
-	MatchList []Matches `orm:"-" json:"-"`
 }
 
 func (a *ArticleDetail) TableName() string {
@@ -55,6 +55,18 @@ func GetArticlesByUser(u int, limit int64, offset int64) (n int64, a []Articles,
 		a[i].MatchList = m
 	}
 	return n, a, nil
+}
+
+func GetArticleById(id int) (a Articles, err error) {
+	o := orm.NewOrm()
+	a = Articles{Id:id}
+	err = o.Read(&a)
+	detail, err := GetArticleDetail(id)
+	if err != nil{
+		return
+	}
+	a.Content = detail
+	return
 }
 
 func GetArticleDetail(id int) (d ArticleDetail, err error) {

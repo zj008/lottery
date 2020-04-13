@@ -36,6 +36,15 @@ func init() {
 
     beego.GlobalControllerRouter["lottery/huancai/controllers:ExpertController"] = append(beego.GlobalControllerRouter["lottery/huancai/controllers:ExpertController"],
         beego.ControllerComments{
+            Method: "GetDetail",
+            Router: `/detail`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["lottery/huancai/controllers:ExpertController"] = append(beego.GlobalControllerRouter["lottery/huancai/controllers:ExpertController"],
+        beego.ControllerComments{
             Method: "GetHot",
             Router: `/hot`,
             AllowHTTPMethods: []string{"get"},

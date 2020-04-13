@@ -25,9 +25,15 @@ func (m *MatchControllers) Get() {
 	if err != nil{
 		lib.ResponseError(&m.Controller, lib.ErrorGetFootMatch, err)
 	}
+
+	for i:=0;i<len(f);i++{
+		f[i].HomeIcon = host + "/img/team/" + f[i].HomeIcon
+		f[i].GuestIcon = host + "/img/team/" + f[i].GuestIcon
+	}
+
 	res := struct {
-		Total int64
-		Data interface{}
+		Total int64 `json:"total"`
+		Data interface{} `json:"data"`
 	}{
 		Total:n,
 		Data:f,
@@ -52,9 +58,15 @@ func (m *MatchControllers) GetBasket() {
 		lib.ResponseError(&m.Controller, lib.ErrorGetBasketMatch, err)
 		return
 	}
+
+	for i:=0;i<len(b);i++{
+		b[i].HomeIcon = host + "/img/team/" + b[i].HomeIcon
+		b[i].GuestIcon = host + "/img/team/" + b[i].GuestIcon
+	}
+
 	res := struct {
-		Total int64
-		Data interface{}
+		Total int64 `json:"total"`
+		Data interface{} `json:"data"`
 	}{
 		Total:n,
 		Data:b,

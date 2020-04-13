@@ -7,8 +7,9 @@ import (
 
 func init() {
     beego.Router("/", &controllers.MainController{})
-	beego.Router("*", &controllers.MainController{})
-	ns := beego.NewNamespace("/v1",
+	beego.Router("/*", &controllers.IndexController{})
+	ns := beego.NewNamespace("/content",
+
 		beego.NSNamespace("/expert",
 			beego.NSInclude(
 				&controllers.ExpertController{},

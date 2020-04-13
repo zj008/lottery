@@ -39,8 +39,8 @@ func (a *ArticlesControllers) Get() {
 		return
 	}
 	data := struct {
-		Total int64
-		Data interface{}
+		Total int64 `json:"total"`
+		Data interface{} `json:"data"`
 	}{
 		Total:n,
 		Data:articles,
@@ -61,10 +61,12 @@ func (a *ArticlesControllers) GetDetail() {
 		lib.ResponseError(&a.Controller, lib.ErrorParam, err)
 		return
 	}
-	detail, err := models.GetArticleDetail(id)
+	article, err := models.GetArticleById(id)
 	if err != nil{
 		lib.ResponseError(&a.Controller, lib.ErrorGetArticleDetail, err)
 		return
 	}
-	lib.ResponseSuccess(&a.Controller, detail)
+	m, _ := models.GetMatchesByArticleId(id)
+	article.MatchList = m
+	lib.ResponseSuccess(&a.Controller, article)
 }

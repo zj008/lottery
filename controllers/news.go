@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"lottery/huancai/lib"
 	"lottery/huancai/models"
+	"strings"
 )
 
 type NewsControllers struct {
@@ -36,12 +37,18 @@ func (n *NewsControllers) Get() {
 	if err != nil{
 		lib.ResponseError(&n.Controller, lib.ErrorGetNews, err)
 	}
+	host := beego.AppConfig.String("host")
+	for i:=0;i<len(news);i++{
+		news[i].Content = strings.ReplaceAll(news[i].Content, "img/news", host+"/img/news")
+		news[i].Img = host + "/img/news/" + news[i].Img
+	}
 	res := struct {
-		Total int64
-		Data interface{}
+		Total int64 `json:"total"`
+		Data interface{} `json:"data"`
 	}{
 		Total:c,
 		Data:news,
 	}
 	lib.ResponseSuccess(&n.Controller, res)
 }
+

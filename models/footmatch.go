@@ -7,6 +7,7 @@ type FootMatchInfo struct {
 	Id              int    `json:"id"`
 	InfoId          int    `json:"info_id"`
 	MatchStatus     int    `json:"match_status"`
+	Status 	string `json:"status"`
 	CardHighlight   int    `json:"card_highlight"`
 	CornerKick      string `json:"corner_kick"`
 	GuestRedCard    int    `json:"guest_red_card"`
