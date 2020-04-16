@@ -27,7 +27,6 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 	beego.SetStaticPath("/", "views")
-	beego.SetStaticPath("/", "static")
 	orm.Debug = true
 	beego.Run()
 }
